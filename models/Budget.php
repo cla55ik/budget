@@ -39,12 +39,18 @@ class Budget extends ActiveRecord{
 
   }
 
-
+  private function setNegative($sum)
+  {
+    return (-1 * $sum);
+  }
 
 
   public function beforeSave($insert)
         {
+          if($this->type == 'out'){
+            $this->sum = $this::setNegative($this->sum);
 
+          }
 
 
           $date = strtotime($this->date);

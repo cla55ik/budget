@@ -18,7 +18,14 @@ class BudgetController extends Controller{
 
                 'rules' => [
                     [
-                        'actions' => ['index', 'create'],
+                        'actions' => [
+                            'index',
+                            'create',
+                            'sort',
+                            'sort-in',
+                            'sort-out',
+                            'delete'
+                          ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -30,11 +37,45 @@ class BudgetController extends Controller{
   public function actionIndex()
   {
       $all_budgets = Budget::find()
+                        ->orderBy('date')
                         ->asArray()
                         ->all();
 
 
       return $this->render('index', ['all_budgets'=>$all_budgets]);
+  }
+
+  public function actionSort($date_start, $date_end)
+  {
+
+    $model = Budget::find()
+                      ->Where(['>=', 'date', $date_start])
+                      ->andWhere(['<=', 'date', $date_end])
+                      ->asArray()
+                      ->all();
+    return $this->render('/budget/index', ['all_budgets'=>$model]);
+  }
+
+  public function actionSortIn()
+  {
+    $model = Budget::find()
+                ->where(['type'=>'in'])
+                ->asArray()
+                ->all();
+
+    return $this->render('index', ['all_budgets'=>$model]);
+
+  }
+
+  public function actionSortOut()
+  {
+    $model = Budget::find()
+                ->where(['type'=>'out'])
+                ->asArray()
+                ->all();
+
+    return $this->render('index', ['all_budgets'=>$model]);
+
   }
 
 
